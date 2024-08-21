@@ -1337,7 +1337,7 @@ func (db *datastore) GetAllPostsTaggedIDs(c *Collection, tag string, includeFutu
 	if db.driverName == driverSQLite {
 		rows, err = db.Query("SELECT id FROM posts WHERE collection_id = ? AND LOWER(content) regexp ? "+timeCondition+" ORDER BY created "+order, collID, `.*#`+strings.ToLower(tag)+`\b.*`)
 	} else {
-		rows, err = db.Query("SELECT id FROM posts WHERE collection_id = ? AND LOWER(content) RLIKE ? "+timeCondition+" ORDER BY created "+order, collID, "#"+strings.ToLower(tag)+"[[:>:]]")
+		rows, err = db.Query("SELECT id FROM posts WHERE collection_id = ? AND LOWER(content) LIKE ? "+timeCondition+" ORDER BY created "+order, collID, "%#"+strings.ToLower(tag)+"%")
 	}
 	if err != nil {
 		log.Error("Failed selecting tagged posts: %v", err)
@@ -1398,7 +1398,7 @@ func (db *datastore) GetPostsTagged(cfg *config.Config, c *Collection, tag strin
 	if db.driverName == driverSQLite {
 		rows, err = db.Query("SELECT "+postCols+" FROM posts WHERE collection_id = ? AND LOWER(content) regexp ? "+timeCondition+" ORDER BY created "+order+limitStr, collID, `.*#`+strings.ToLower(tag)+`\b.*`)
 	} else {
-		rows, err = db.Query("SELECT "+postCols+" FROM posts WHERE collection_id = ? AND LOWER(content) RLIKE ? "+timeCondition+" ORDER BY created "+order+limitStr, collID, "#"+strings.ToLower(tag)+"[[:>:]]")
+		rows, err = db.Query("SELECT "+postCols+" FROM posts WHERE collection_id = ? AND LOWER(content) LIKE ? "+timeCondition+" ORDER BY created "+order+limitStr, collID, "%#"+strings.ToLower(tag)+"%")
 	}
 	if err != nil {
 		log.Error("Failed selecting from posts: %v", err)

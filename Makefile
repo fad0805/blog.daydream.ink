@@ -18,46 +18,46 @@ ci: deps
 	cd cmd/writefreely; $(GOBUILD) -v
 
 build: deps
-	cd cmd/writefreely; $(GOBUILD) -v -tags='netgo sqlite'
+	cd cmd/writefreely; $(GOBUILD) -v -tags='netgo mysql'
 
-build-no-sqlite: deps-no-sqlite
+build-no-mysql: deps-no-mysql
 	cd cmd/writefreely; $(GOBUILD) -v -tags='netgo' -o $(BINARY_NAME)
 
 build-linux: deps
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GOCMD) install src.techknowlogick.com/xgo@latest; \
 	fi
-	xgo --targets=linux/amd64, -dest build/ $(LDFLAGS) -tags='netgo sqlite' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
+	xgo --targets=linux/amd64, -dest build/ $(LDFLAGS) -tags='netgo mysql' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
 
 build-windows: deps
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GOCMD) install src.techknowlogick.com/xgo@latest; \
 	fi
-	xgo --targets=windows/amd64, -dest build/ $(LDFLAGS) -tags='netgo sqlite' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
+	xgo --targets=windows/amd64, -dest build/ $(LDFLAGS) -tags='netgo mysql' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
 
 build-darwin: deps
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GOCMD) install src.techknowlogick.com/xgo@latest; \
 	fi
-	xgo --targets=darwin/amd64, -dest build/ $(LDFLAGS) -tags='netgo sqlite' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
+	xgo --targets=darwin/amd64, -dest build/ $(LDFLAGS) -tags='netgo mysql' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
 
 build-arm6: deps
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GOCMD) install src.techknowlogick.com/xgo@latest; \
 	fi
-	xgo --targets=linux/arm-6, -dest build/ $(LDFLAGS) -tags='netgo sqlite' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
+	xgo --targets=linux/arm-6, -dest build/ $(LDFLAGS) -tags='netgo mysql' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
 
 build-arm7: deps
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GOCMD) install src.techknowlogick.com/xgo@latest; \
 	fi
-	xgo --targets=linux/arm-7, -dest build/ $(LDFLAGS) -tags='netgo sqlite' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
+	xgo --targets=linux/arm-7, -dest build/ $(LDFLAGS) -tags='netgo mysql' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
 
 build-arm64: deps
 	@hash xgo > /dev/null 2>&1; if [ $$? -ne 0 ]; then \
 		$(GOCMD) install src.techknowlogick.com/xgo@latest; \
 	fi
-	xgo --targets=linux/arm64, -dest build/ $(LDFLAGS) -tags='netgo sqlite' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
+	xgo --targets=linux/arm64, -dest build/ $(LDFLAGS) -tags='netgo mysql' -go go-1.19.x -out writefreely -pkg ./cmd/writefreely .
 
 build-docker :
 	$(DOCKERCMD) build -t $(IMAGE_NAME):latest -t $(IMAGE_NAME):$(GITREV) .
@@ -66,13 +66,13 @@ test:
 	$(GOTEST) -v ./...
 
 run:
-	$(GOINSTALL) -tags='netgo sqlite' ./...
+	$(GOINSTALL) -tags='netgo mysql' ./...
 	$(BINARY_NAME) --debug
 
 deps :
-	$(GOGET) -tags='sqlite' -d -v ./...
+	$(GOGET) -tags='mysql' -d -v ./...
 
-deps-no-sqlite:
+deps-no-mysql:
 	$(GOGET) -d -v ./...
 
 install : build
@@ -123,7 +123,7 @@ release-linux : clean ui
 	cp -r pages $(BUILDPATH)
 	cp -r static $(BUILDPATH)
 	mkdir $(BUILDPATH)/keys
-	$(MAKE) build-no-sqlite
+	$(MAKE) build-no-mysql
 	mv cmd/writefreely/$(BINARY_NAME) $(BUILDPATH)/$(BINARY_NAME)
 	tar -cvzf $(BINARY_NAME)_$(GITREV)_linux_amd64.tar.gz -C build $(BINARY_NAME)
 
