@@ -359,7 +359,8 @@ func (c *Collection) PersonObject(ids ...int64) *activitystreams.Person {
 }
 
 func (c *Collection) AvatarURL() string {
-	fl := string(unicode.ToLower([]rune(c.DisplayTitle())[0]))
+	initial := strings.Split(c.CanonicalURL(), "/")[3]
+	fl := string(unicode.ToLower([]rune(initial)[0]))
 	if !isAvatarChar(fl) {
 		return ""
 	}
